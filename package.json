@@ -35,6 +35,7 @@
     "@types/react-window": "^1.8.2",
     "@types/rebass": "^4.0.5",
     "@types/styled-components": "^5.1.0",
+    "@types/styled-system": "^5.1.13",
     "@types/testing-library__cypress": "^5.0.5",
     "@types/wcag-contrast": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
@@ -97,6 +98,7 @@
     "serve": "^11.3.0",
     "start-server-and-test": "^1.11.0",
     "styled-components": "^4.2.0",
+    "styled-system": "^5.1.5",
     "typescript": "^3.8.3",
     "use-count-up": "^2.2.5",
     "wcag-contrast": "^3.0.0"
