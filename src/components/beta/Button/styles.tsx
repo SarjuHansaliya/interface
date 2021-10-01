@@ -11,7 +11,7 @@ const Primary = (props: ButtonProps) =>
 const Secondary = (props: ButtonProps) =>
   props.variant === 'secondary' &&
   css`
-    background-color: ${({ theme }) => theme.primary4};
+    background-color: ${({ theme }) => theme.primary6};
     color: ${({ theme }) => theme.primary1};
   `
 
@@ -68,9 +68,13 @@ export const Root = styled.button<ButtonProps>`
 export const IconAfter = styled.div`
   color: white;
   margin-left: 10px;
+  display: flex;
+  align-items: center;
 `
 
 export const IconBefore = styled.div`
   color: white;
   margin-right: 10px;
+  display: flex;
+  align-items: center;
 `
