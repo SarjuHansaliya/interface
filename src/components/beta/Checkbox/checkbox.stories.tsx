@@ -4,7 +4,7 @@ import { ComponentStory } from '@storybook/react'
 
 export default {
   component: Checkbox,
-  title: 'Base/Beta/Checkbox'
+  title: 'Beta/Checkbox'
 }
 
 const TemplateCheckbox: ComponentStory<typeof Checkbox> = (args: any) => <Checkbox {...args} />

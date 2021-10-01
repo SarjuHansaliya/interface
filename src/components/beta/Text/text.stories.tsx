@@ -4,7 +4,7 @@ import { ComponentStory } from '@storybook/react'
 
 export default {
   component: Text,
-  title: 'Base/Beta/Text'
+  title: 'Beta/Text'
 }
 
 const TemplateText: ComponentStory<typeof Text> = (args: any) => <Text {...args}>Sample Text</Text>

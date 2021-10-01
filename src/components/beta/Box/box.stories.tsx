@@ -4,7 +4,7 @@ import { ComponentStory } from '@storybook/react'
 
 export default {
   component: Box,
-  title: 'Base/Beta/Box'
+  title: 'Beta/Box'
 }
 
 const TemplateBox: ComponentStory<typeof Box> = (args: any) => (

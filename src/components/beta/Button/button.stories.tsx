@@ -1,12 +1,11 @@
 import React from 'react'
 import { Button } from '.'
 import { ComponentStory } from '@storybook/react'
-import { CheckCircle, Copy } from 'react-feather'
-import { width } from 'styled-system'
+import { CheckCircle } from 'react-feather'
 
 export default {
   component: Button,
-  title: 'Base/Beta/Buttons'
+  title: 'Beta/Buttons'
 }
 
 const TemplateButton: ComponentStory<typeof Button> = (args: any) => <Button {...args}>Button</Button>
@@ -19,7 +18,7 @@ Primary.args = {
 export const AfterIcon = TemplateButton.bind({})
 AfterIcon.args = {
   variant: 'primary',
-  iconAfter: <CheckCircle size={'14'} />
+  iconAfter: <CheckCircle size={'12'} />
 }
 
 export const BeforeIcon = TemplateButton.bind({})

@@ -4,7 +4,7 @@ import { ComponentStory } from '@storybook/react'
 
 export default {
   component: CheckboxGroup,
-  title: 'Base/Beta/CheckboxGroup'
+  title: 'Beta/CheckboxGroup'
 }
 
 const TemplateCheckboxGroup: ComponentStory<typeof CheckboxGroup> = (args: any) => <CheckboxGroup {...args} />

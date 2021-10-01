@@ -4,7 +4,7 @@ import { ComponentStory } from '@storybook/react'
 
 export default {
   component: RadioButtonGroup,
-  title: 'Base/Beta/RadioButtonGroup'
+  title: 'Beta/RadioButtonGroup'
 }
 
 const TemplateRadioGroup: ComponentStory<typeof RadioButtonGroup> = (args: any) => <RadioButtonGroup {...args} />
