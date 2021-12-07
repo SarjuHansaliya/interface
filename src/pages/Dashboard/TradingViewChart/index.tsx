@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { createChart, IChartApi } from 'lightweight-charts'
 import styled from 'styled-components'
 import { useDarkModeManager } from '../../../state/user/hooks'
+import { useWindowSize } from '../../../hooks/useWindowSize'
 
 const WIDTH = 740
 const HEIGHT = 415
@@ -30,6 +31,7 @@ export default function TradingViewChart() {
   // pointer to the chart object
   const [chartCreated, setChartCreated] = useState<IChartApi>()
   const [isDark] = useDarkModeManager()
+  const { width } = useWindowSize()
 
   const formattedData = data
 
@@ -115,13 +117,19 @@ export default function TradingViewChart() {
 
   useEffect(() => {
     if (chartCreated) {
+      const chartContainer = document.querySelector('#chart-container-id')
+      let width
+      if (chartContainer) {
+        width = chartContainer.clientWidth
+      }
       chartCreated.applyOptions({
+        width: width || undefined,
         layout: {
           textColor: isDark ? '#707070' : 'black'
         }
       })
     }
-  }, [isDark, chartCreated])
+  }, [isDark, chartCreated, width])
   return (
     <Wrapper>
       <div id={'chart-container-id'} />

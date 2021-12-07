@@ -38,6 +38,7 @@ import {
   NewsDate,
   SlickNext,
   // Followed Wallets
+  FollowedWrapper,
   WalletProfile,
   WalletProfileAddress,
   WalletProfileChain,
@@ -46,7 +47,8 @@ import {
   Row,
   FollowButton,
   IconButton,
-  ContainerLeftFollowed
+  ContainerLeftFollowed,
+  breakpoint
 } from './styleds'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -135,8 +137,8 @@ const Dashboard = () => {
     <PageWrapper>
       <PageTitle>{t('dashboardPage.dashboard')}</PageTitle>
       <PageDescription>{t('dashboardPage.greetings')}</PageDescription>
-      <TopContainerWrapper>
-        <ContainerLeft>
+      <TopContainerWrapper break={breakpoint.lg}>
+        <ContainerLeft break={breakpoint.lg}>
           <Card>
             <CardHeader>
               {t('dashboardPage.portfolioValue')}
@@ -158,7 +160,7 @@ const Dashboard = () => {
             </CardBody>
           </Card>
         </ContainerLeft>
-        <ContainerRight>
+        <ContainerRight break={breakpoint.lg}>
           <TopContainerWrapper>
             <ContainerLeft>
               <NewsSection img={Earth}>
@@ -288,7 +290,7 @@ const Dashboard = () => {
             </AddNewCoinButton>
           </CardHeader>
           <CardBody>
-            <FlexWrapper>
+            <FollowedWrapper>
               <ContainerLeftFollowed>
                 <WalletProfile>
                   <img
@@ -325,7 +327,7 @@ const Dashboard = () => {
                   </Row>
                 </WalletTokens>
               </ContainerLeftFollowed>
-              <ContainerRight>
+              <ContainerRight break={breakpoint.md}>
                 <WalletAddresses>
                   <Row type="th">
                     <div>Address</div>
@@ -370,7 +372,7 @@ const Dashboard = () => {
                   </Row>
                 </WalletAddresses>
               </ContainerRight>
-            </FlexWrapper>
+            </FollowedWrapper>
           </CardBody>
         </Card>
       </BottomContainerWrapper>

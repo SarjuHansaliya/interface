@@ -2,6 +2,13 @@ import { Box, Button } from '@pangolindex/components'
 import { ButtonPrimary, ButtonOutlined } from '../../components/Button'
 import styled from 'styled-components'
 
+export enum breakpoint {
+  xs,
+  sm,
+  md,
+  lg
+}
+
 export const FlexWrapper = styled(Box)`
   display: flex;
 `
@@ -26,19 +33,56 @@ export const PageDescription = styled.div`
   color: ${({ theme }) => theme.text8};
 `
 
-export const TopContainerWrapper = styled(Box)`
+export const TopContainerWrapper = styled(Box)<{ break?: breakpoint }>`
   width: 100%;
   margin-bottom: 22px;
   display: flex;
+  ${props =>
+    props.break === breakpoint.md
+      ? ({ theme }) => theme.mediaWidth.upToMedium`
+  flex-direction: column;`
+      : ''}
+  ${props =>
+    props.break === breakpoint.lg
+      ? ({ theme }) => theme.mediaWidth.upToLarge`
+  flex-direction: column;`
+      : ''}
 `
 
-export const ContainerLeft = styled(Box)`
-  width: 50%;
+export const ContainerLeft = styled(Box)<{ break?: breakpoint }>`
+  width: calc(50% - 11px);
   margin-right: 22px;
+  ${props =>
+    props.break === breakpoint.md
+      ? ({ theme }) => theme.mediaWidth.upToMedium`
+        width: 100%;
+        margin-bottom: 22px;
+      `
+      : ''}
+  ${props =>
+    props.break === breakpoint.lg
+      ? ({ theme }) => theme.mediaWidth.upToLarge`
+        width: 100%;
+        margin-bottom: 22px;
+      `
+      : ''}
 `
 
-export const ContainerRight = styled(Box)`
-  width: 50%;
+export const ContainerRight = styled(Box)<{ break?: breakpoint }>`
+  width: calc(50% - 11px);
+
+  ${props =>
+    props.break === breakpoint.md
+      ? ({ theme }) => theme.mediaWidth.upToMedium`
+        width: 100%;
+      `
+      : ''}
+  ${props =>
+    props.break === breakpoint.lg
+      ? ({ theme }) => theme.mediaWidth.upToLarge`
+        width: 100%;
+      `
+      : ''}
 `
 
 export const BottomContainerWrapper = styled(Box)`
@@ -51,6 +95,7 @@ export const Card = styled(Box)`
   margin-right: 22px;
   background: ${({ theme }) => theme.bg2};
   border-radius: 8px;
+  height: 100%;
 
   &:last-child {
     margin-right: 0px;
@@ -321,11 +366,26 @@ export const CoinDetailToken = styled(Box)`
 `
 
 // followed wallets
+export const FollowedWrapper = styled(Box)`
+  display: flex;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-direction: column;
+  `};
+`
+
 export const ContainerLeftFollowed = styled(Box)`
   width: 50%;
   margin-right: 35px;
   padding-right: 30px;
   border-right: 1px solid ${({ theme }) => theme.text8};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: 100%;
+    padding-right: 0px;
+    padding-bottom: 30px;
+    border-right: none;
+    // border-bottom: 1px solid ${({ theme }) => theme.text8};
+  `};
 `
 
 export const WalletProfile = styled(Box)`
@@ -374,7 +434,8 @@ export const Row = styled(Box)<{ type?: string }>`
     width: 40%;
 
     &:last-child {
-      width: 20%;
+      width: 170px;
+      min-width: 160px;
       text-align: right;
     }
   }
