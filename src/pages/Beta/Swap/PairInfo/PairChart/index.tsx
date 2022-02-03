@@ -3,12 +3,13 @@ import { Pair, Token } from '@pangolindex/sdk'
 import { createChart, CrosshairMode, IChartApi, ISeriesApi } from 'lightweight-charts'
 import { useMeasure } from 'react-use'
 import { useDarkModeManager } from 'src/state/user/hooks'
-import { TIMEFRAME } from 'src/constants'
+import { TIMEFRAME, TimeFrameType } from 'src/constants'
 import { usePairHourlyRateData, useHourlyPairTokensChartData } from 'src/state/pair/hooks'
 import { CustomLightSpinner } from 'src/theme'
 import Circle from 'src/assets/images/blue-loader.svg'
-import { Box } from '@pangolindex/components'
-import { ChartWrapper, ChartContainer } from './styleds'
+import { Box, ToggleButtons } from '@pangolindex/components'
+import { ChartWrapper, ChartContainer, OptionsWrapper } from './styleds'
+import dayjs from 'dayjs'
 
 type Props = { pair?: Pair | null; tokenB?: Token; tokenA?: Token }
 
@@ -19,27 +20,25 @@ const PairChart: React.FC<Props> = ({ pair, tokenA, tokenB }) => {
   const [chartSeries, setChartSeries] = useState<ISeriesApi<'Candlestick'>>()
   const [isDark] = useDarkModeManager()
 
-  let timeWindow =
-    TIMEFRAME.find(t => t.label === '1Y') ||
-    ({} as {
-      description: string
-      label: string
-      interval: number
-      momentIdentifier: string
-    })
+  let defaultTimeFrame = TIMEFRAME.find(t => t.label === '1D') || ({} as TimeFrameType)
+  const [timeWindow, setTimeWindow] = useState(defaultTimeFrame || ({} as TimeFrameType))
 
   const pairChartData = usePairHourlyRateData(
     (pair?.liquidityToken?.address || '').toLowerCase(),
     timeWindow?.momentIdentifier,
-    86400
+    timeWindow.interval,
+    timeWindow.momentIdentifier
   )
-  const chartData = pairChartData && pair?.token0 === tokenB ? pairChartData[0] : pairChartData ? pairChartData[1] : []
+
+  const chartData =
+    pairChartData && pair?.token0 === tokenB ? pairChartData[0] : pairChartData ? pairChartData[1] : undefined
 
   const pairTokensChartData = useHourlyPairTokensChartData(
     tokenA?.address || '',
     tokenB?.address || '',
     timeWindow?.momentIdentifier,
-    86400
+    timeWindow.interval,
+    timeWindow.momentIdentifier
   )
 
   const chartData1 =
@@ -47,7 +46,7 @@ const PairChart: React.FC<Props> = ({ pair, tokenA, tokenB }) => {
       ? pairTokensChartData[0]
       : pairTokensChartData
       ? pairTokensChartData[1]
-      : []
+      : undefined
 
   const formattedData = (chartData || []).length > 0 ? chartData : chartData1
 
@@ -102,7 +101,8 @@ const PairChart: React.FC<Props> = ({ pair, tokenA, tokenB }) => {
           }
         },
         localization: {
-          dateFormat: 'yyyy-MM-dd'
+          // dateFormat: 'yyyy-MM-dd hh:mm:ss',
+          timeFormatter: (time: any) => dayjs.utc(dayjs.unix(Number(time))).format('YYYY-MM-DD hh:mm:ss')
         }
       })
 
@@ -115,7 +115,7 @@ const PairChart: React.FC<Props> = ({ pair, tokenA, tokenB }) => {
         wickUpColor: '#838ca1'
       })
 
-      series.setData([...formattedData])
+      series.setData([...(formattedData || [])])
       setChartSeries(series)
 
       let toolTip = document.createElement('div')
@@ -135,7 +135,8 @@ const PairChart: React.FC<Props> = ({ pair, tokenA, tokenB }) => {
 
   useEffect(() => {
     if (chartCreated && formattedData) {
-      chartSeries?.setData([...formattedData])
+      chartSeries?.setData([...(formattedData || [])])
+      chartCreated.timeScale().fitContent()
     }
   }, [formattedData, chartCreated, chartSeries])
 
@@ -150,6 +151,10 @@ const PairChart: React.FC<Props> = ({ pair, tokenA, tokenB }) => {
   }, [isDark, chartCreated])
 
   useEffect(() => {
+    console.log('new data', formattedData)
+  }, [formattedData])
+
+  useEffect(() => {
     chartCreated?.applyOptions({
       width,
       height
@@ -158,6 +163,17 @@ const PairChart: React.FC<Props> = ({ pair, tokenA, tokenB }) => {
 
   return (
     <ChartWrapper>
+      <OptionsWrapper>
+        <ToggleButtons
+          options={TIMEFRAME.map(item => item.label)}
+          value={timeWindow.label}
+          onChange={val => {
+            const nextTimeFrame = TIMEFRAME.find(t => t.label === val) as TimeFrameType
+            setTimeWindow(nextTimeFrame)
+          }}
+        />
+      </OptionsWrapper>
+
       <ChartContainer id="chart-container-id" ref={ref as any}>
         {(formattedData || []).length === 0 && (
           <Box

@@ -8,6 +8,13 @@ export const ChartWrapper = styled.div`
   position: relative;
 `
 
+export const OptionsWrapper = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 10;
+`
+
 export const ChartContainer = styled.div`
   width: 100%;
   height: 100%;

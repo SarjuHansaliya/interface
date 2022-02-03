@@ -5,7 +5,7 @@ import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts'
 import { Token } from '@pangolindex/sdk'
 import { SelectedCoinInfo, TrackIcons, DurationBtns } from './styleds'
 import useUSDCPrice from 'src/utils/useUSDCPrice'
-import { ANALYTICS_PAGE } from 'src/constants'
+import { ANALYTICS_PAGE, TimeFrameType } from 'src/constants'
 import { useSwapActionHandlers } from 'src/state/swap/hooks'
 import { Field } from 'src/state/swap/actions'
 import { useTokenPriceData } from 'src/state/token/hooks'
@@ -22,17 +22,8 @@ export const RedirectContext = React.createContext<boolean>(false)
 
 const CoinChart: React.FC<Props> = ({ coin }) => {
   const { t } = useTranslation()
-  let weekFrame = TIMEFRAME.find(t => t.label === '1W')
-
-  const [timeWindow, setTimeWindow] = useState(
-    weekFrame ||
-      ({} as {
-        description: string
-        label: string
-        interval: number
-        momentIdentifier: string
-      })
-  )
+  let defaultTimeFrame = TIMEFRAME.find(t => t.label === '1D')
+  const [timeWindow, setTimeWindow] = useState(defaultTimeFrame || ({} as TimeFrameType))
 
   const redirect = useContext(RedirectContext)
 

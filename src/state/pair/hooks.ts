@@ -93,13 +93,17 @@ export const getPairHourlyRateData = async (
     for (var row in result) {
       let timestamp = row.split('t')[1]
 
-      const year = dayjs.utc(dayjs.unix(Number(timestamp))).get('year')
-      const month = dayjs.utc(dayjs.unix(Number(timestamp))).get('month') + 1
-      const day = dayjs.utc(dayjs.unix(Number(timestamp))).get('date')
+      // const dayjsTime = dayjs.utc(dayjs.unix(Number(timestamp)))
+      // const year = dayjsTime.get('year')
+      // const month = dayjsTime.get('month') + 1
+      // const day = dayjsTime.get('date')
+      // const hour = dayjsTime.get('hour')
+      // const minutes = dayjsTime.get('minute')
+      // const seconds = dayjsTime.get('second')
 
       if (timestamp) {
         values.push({
-          timestamp: { year: year, month: month, day: day },
+          timestamp: Number(timestamp),
           rate0: parseFloat(result[row]?.token0Price) || 0,
           rate1: parseFloat(result[row]?.token1Price) || 0
         })

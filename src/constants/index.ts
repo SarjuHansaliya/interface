@@ -1234,7 +1234,15 @@ export const WYRE_RESERVE_API_ENDPOINT = '/v3/orders/reserve'
 export const WYRE_CALLBACK_URL = 'https://app.pangolin.exchange/'
 
 export const IS_IN_IFRAME = window.parent !== window
-export const TIMEFRAME = [
+
+export type TimeFrameType = {
+  description: string
+  label: string
+  interval: number
+  momentIdentifier: string
+}
+
+export const TIMEFRAME: TimeFrameType[] = [
   {
     description: 'HOUR',
     label: '1H',
@@ -1244,35 +1252,34 @@ export const TIMEFRAME = [
   {
     description: 'DAY',
     label: '1D',
-    interval: 3600,
+    interval: 3600, // every hour
     momentIdentifier: 'day'
   },
   {
     description: 'WEEK',
     label: '1W',
-    interval: 86400,
+    interval: 3600, // every hour
     momentIdentifier: 'week'
   },
   {
     description: 'MONTH',
     label: '1M',
-    interval: 604800,
+    interval: 43200, // every 12 hour
     momentIdentifier: 'month'
   },
   {
     description: 'YEAR',
     label: '1Y',
-    interval: 2629746,
+    interval: 86400, // every day
     momentIdentifier: 'year'
   },
   {
     description: 'ALL',
     label: 'ALL',
-    interval: 2629746,
-    momentIdentifier: ''
+    interval: 86400,
+    momentIdentifier: 'ALL'
   }
 ]
-
 
 /*
  * Mapping between symbol (uppercase string) and CoinGecko coin id (string)
@@ -1280,5 +1287,5 @@ export const TIMEFRAME = [
  */
 export const COIN_ID_OVERRIDE = {
   NEKO: undefined,
-  VEE: undefined,
+  VEE: undefined
 }
