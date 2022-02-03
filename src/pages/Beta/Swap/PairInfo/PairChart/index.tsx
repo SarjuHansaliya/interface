@@ -17,13 +17,14 @@ const PairChart: React.FC<Props> = ({ pair, tokenA, tokenB }) => {
   const [ref, { width, height }] = useMeasure()
 
   const [chartCreated, setChartCreated] = useState<IChartApi>()
+  const [chartLoading, setChartLoading] = useState(false)
   const [chartSeries, setChartSeries] = useState<ISeriesApi<'Candlestick'>>()
   const [isDark] = useDarkModeManager()
 
   let defaultTimeFrame = TIMEFRAME.find(t => t.label === '1D') || ({} as TimeFrameType)
   const [timeWindow, setTimeWindow] = useState(defaultTimeFrame || ({} as TimeFrameType))
 
-  const pairChartData = usePairHourlyRateData(
+  const { loading, chartData: pairChartData } = usePairHourlyRateData(
     (pair?.liquidityToken?.address || '').toLowerCase(),
     timeWindow?.momentIdentifier,
     timeWindow.interval,
@@ -48,7 +49,7 @@ const PairChart: React.FC<Props> = ({ pair, tokenA, tokenB }) => {
       ? pairTokensChartData[1]
       : undefined
 
-  const formattedData = (chartData || []).length > 0 ? chartData : chartData1
+  const formattedData = !chartData || (chartData || []).length > 0 ? chartData : chartData1
 
   // if no chart created yet, create one with options and add to DOM manually
   useEffect(() => {
@@ -115,7 +116,9 @@ const PairChart: React.FC<Props> = ({ pair, tokenA, tokenB }) => {
         wickUpColor: '#838ca1'
       })
 
-      series.setData([...(formattedData || [])])
+      if (formattedData) {
+        series.setData([...formattedData])
+      }
       setChartSeries(series)
 
       let toolTip = document.createElement('div')
@@ -135,7 +138,7 @@ const PairChart: React.FC<Props> = ({ pair, tokenA, tokenB }) => {
 
   useEffect(() => {
     if (chartCreated && formattedData) {
-      chartSeries?.setData([...(formattedData || [])])
+      chartSeries?.setData([...formattedData])
       chartCreated.timeScale().fitContent()
     }
   }, [formattedData, chartCreated, chartSeries])
@@ -151,8 +154,12 @@ const PairChart: React.FC<Props> = ({ pair, tokenA, tokenB }) => {
   }, [isDark, chartCreated])
 
   useEffect(() => {
-    console.log('new data', formattedData)
-  }, [formattedData])
+    if (loading || !chartData) {
+      setChartLoading(true)
+    } else {
+      setChartLoading(false)
+    }
+  }, [formattedData, loading, chartData])
 
   useEffect(() => {
     chartCreated?.applyOptions({
@@ -175,7 +182,7 @@ const PairChart: React.FC<Props> = ({ pair, tokenA, tokenB }) => {
       </OptionsWrapper>
 
       <ChartContainer id="chart-container-id" ref={ref as any}>
-        {(formattedData || []).length === 0 && (
+        {chartLoading && (
           <Box
             position={'absolute'}
             top={0}

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { client } from '../../apollo/client'
 import { HOURLY_PAIR_RATES } from '../../apollo/pair'
 import { PRICES_BY_BLOCK } from '../../apollo/block'
@@ -21,6 +21,7 @@ export function useAllPairChartData(): ChartState | undefined {
 
 export function usePairHourlyRateData(pairAddress: string, timeWindow: string, interval = 3600, type = 'ALL') {
   const data1 = useAllPairChartData()
+  const [loading, setLoading] = useState(false)
 
   const chartData = data1?.[pairAddress]
 
@@ -41,7 +42,9 @@ export function usePairHourlyRateData(pairAddress: string, timeWindow: string, i
             .unix()
 
     async function fetch() {
+      setLoading(true)
       let data = await getPairHourlyRateData(pairAddress, startTime, undefined, interval)
+      setLoading(false)
 
       dispatch(updatePairChartData({ address: pairAddress, chartData: data }))
     }
@@ -50,7 +53,7 @@ export function usePairHourlyRateData(pairAddress: string, timeWindow: string, i
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interval, timeWindow, pairAddress])
 
-  return chartData
+  return { loading, chartData }
 }
 
 export const getPairHourlyRateData = async (
@@ -87,19 +90,16 @@ export const getPairHourlyRateData = async (
     }
 
     const result: any = await splitQuery(HOURLY_PAIR_RATES, client, [pairAddress], blocks, 100)
+    const validItems = Object.values(result || {}).filter(item => !!item) // item that has some value
+
+    if (validItems.length === 0) {
+      return []
+    }
 
     // format token ETH price results
     let values = [] as any
     for (var row in result) {
       let timestamp = row.split('t')[1]
-
-      // const dayjsTime = dayjs.utc(dayjs.unix(Number(timestamp)))
-      // const year = dayjsTime.get('year')
-      // const month = dayjsTime.get('month') + 1
-      // const day = dayjsTime.get('date')
-      // const hour = dayjsTime.get('hour')
-      // const minutes = dayjsTime.get('minute')
-      // const seconds = dayjsTime.get('second')
 
       if (timestamp) {
         values.push({
