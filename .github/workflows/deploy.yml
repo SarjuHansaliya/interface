@@ -33,7 +33,7 @@ jobs:
         env:
           CI: true
       - name: Prod - Increment version & create build # incrementing version automatically creates build internally with new version
-        run: npm version patch
+        run: npm version patch -m "[skip ci] %s"
         if: ${{ github.ref == 'refs/heads/master' }}
         env:
           CI: false
@@ -42,7 +42,7 @@ jobs:
           REACT_APP_WYRE_SECRET_KEY: ${{ secrets.REACT_APP_WYRE_SECRET_KEY }}
           REACT_APP_MOONPAY_PK: ${{ secrets.REACT_APP_MOONPAY_PK }}
       - name: Dev - Increment version & create build # incrementing version automatically creates build internally with new version
-        run: npm version prerelease --preid=dev
+        run: npm version prerelease --preid=dev -m "[skip ci] %s"
         if: ${{ github.ref == 'refs/heads/dev' }}
         env:
           CI: false
@@ -53,7 +53,7 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GIT_ACCESS_TOKEN }}
           branch: ${{ github.ref }}
           tags: true
       - name: set versions to env
@@ -63,10 +63,10 @@ jobs:
       - run: echo ${{ env.TAG_VERSION }}
       - name: install sentry-cli
         run: npm install -g @sentry/cli
-      - name: upload sourcemaps to sentry
-        run: |
-              sentry-cli --auth-token ${{ secrets.SENTRY_AUTH_TOKEN }} releases --org pangolin-tq --project pangolin-tq new ${{env.SENTRY_VERSION}} --finalize
-              sentry-cli --auth-token ${{ secrets.SENTRY_AUTH_TOKEN }} releases --org pangolin-tq --project pangolin-tq files "${{env.SENTRY_VERSION}}" upload-sourcemaps ./build/static/js
+      # - name: upload sourcemaps to sentry
+      #   run: |
+      #         sentry-cli --auth-token ${{ secrets.SENTRY_AUTH_TOKEN }} releases --org pangolin-tq --project pangolin-tq new ${{env.SENTRY_VERSION}} --finalize
+      #         sentry-cli --auth-token ${{ secrets.SENTRY_AUTH_TOKEN }} releases --org pangolin-tq --project pangolin-tq files "${{env.SENTRY_VERSION}}" upload-sourcemaps ./build/static/js
       - name: Zip Assets
         run: zip -r build.zip build
       - name: Release
@@ -75,10 +75,10 @@ jobs:
           prerelease: ${{ github.ref == 'refs/heads/dev' }}
           tag_name: ${{ env.TAG_VERSION }}
           files: build.zip
-      - run: npx ipfs-deploy@8.0.1 ./build -p infura -p pinata -d cloudflare -O -C
-        env:
-          IPFS_DEPLOY_PINATA__API_KEY: ${{ secrets.PINATA_KEY }}
-          IPFS_DEPLOY_PINATA__SECRET_API_KEY: ${{ secrets.PINATA_SECRET }}
-          IPFS_DEPLOY_CLOUDFLARE__API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          IPFS_DEPLOY_CLOUDFLARE__ZONE: ${{ secrets.CF_ZONE }}
-          IPFS_DEPLOY_CLOUDFLARE__RECORD: ${{ github.ref == 'refs/heads/master' && secrets.CF_RECORD || secrets.CF_BETA_RECORD }}
+      # - run: npx ipfs-deploy@8.0.1 ./build -p infura -p pinata -d cloudflare -O -C
+      #   env:
+      #     IPFS_DEPLOY_PINATA__API_KEY: ${{ secrets.PINATA_KEY }}
+      #     IPFS_DEPLOY_PINATA__SECRET_API_KEY: ${{ secrets.PINATA_SECRET }}
+      #     IPFS_DEPLOY_CLOUDFLARE__API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+      #     IPFS_DEPLOY_CLOUDFLARE__ZONE: ${{ secrets.CF_ZONE }}
+      #     IPFS_DEPLOY_CLOUDFLARE__RECORD: ${{ github.ref == 'refs/heads/master' && secrets.CF_RECORD || secrets.CF_BETA_RECORD }}
